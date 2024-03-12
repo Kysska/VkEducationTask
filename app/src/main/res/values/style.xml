@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="TextBold">
+    <style name="textBold">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/black80</item>
+    </style>
+
+    <style name="textNormal">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black80</item>
     </style>
 
 </resources>

@@ -1,5 +1,7 @@
 package com.example.vkeducationtask.domain.entity
 
+import java.io.Serializable
+
 data class Product
     (
     val id: Int,
@@ -13,4 +15,4 @@ data class Product
     val category: String,
     val thumbnail: String,
     val images: ArrayList<String>
-)
+) : Serializable

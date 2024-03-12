@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import com.example.vkeducationtask.R
 import com.example.vkeducationtask.databinding.CardProductBinding
 import com.example.vkeducationtask.databinding.FragmentProductItemBinding
+import com.example.vkeducationtask.domain.entity.Product
 import com.squareup.picasso.Picasso
 import kotlin.math.abs
 
@@ -36,77 +38,51 @@ class ProductItemFragment : Fragment(), GestureDetector.OnGestureListener  {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        listImage = getListImage() ?: arrayListOf()
+        val product = getProduct()
+        listImage = product.images
         gestureDefector = GestureDetector(requireContext(), this)
         binding.imageView2.setOnTouchListener{ view, motionEvent ->
             gestureDefector.onTouchEvent(motionEvent)
             true
         }
+        loadImage(currentIndexImage)
+        preloadImages()
         binding.apply {
-            title.text = getTitle()
-            desc.text = getDesc()
-            rating.text = getRating().toString()
-            price.text = getPrice().toString()
-            discountPercentage.text = getDiscount().toString()
-            brand.text = getBrand()
+            title.text = product.title
+            desc.text = product.description
+            rating.text = product.rating.toString()
+            price.text = "$" + product.price.toString()
+            discountPercentage.text = product.discountPercentage.toString()
+            brand.text = product.brand
             imageButton.setOnClickListener {
-                requireActivity().onBackPressed()
+                parentFragmentManager.popBackStack()
             }
-            loadImage(currentIndexImage)
+            nextImage.setOnClickListener {
+                nextImage()
+            }
+            backImage.setOnClickListener {
+                prevImage()
+            }
         }
 
     }
 
-    private fun getTitle(): String? {
-        return requireArguments().getString(TITLE)
-    }
-
-    private fun getListImage(): ArrayList<String>? {
-        return requireArguments().getStringArrayList(LIST_IMAGE)
-    }
-
-    private fun getDesc(): String? {
-        return requireArguments().getString(DESC)
-    }
-
-    private fun getRating(): Double {
-        return requireArguments().getDouble(RATING)
-    }
-
-    private fun getPrice(): Int {
-        return requireArguments().getInt(PRICE)
-    }
-
-    private fun getDiscount(): Double {
-        return requireArguments().getDouble(DISCOUNT)
-    }
-
-    private fun getBrand(): String? {
-        return requireArguments().getString(BRAND)
+    private fun getProduct() : Product {
+        return requireArguments().getSerializable(PRODUCT) as Product
     }
 
     companion object {
-        private const val SWIPE_MIN_DISTANCE = 120
+        private const val SWIPE_MIN_DISTANCE = 80
         private const val SWIPE_MAX_OFF_PATH = 250
         private const val SWIPE_THRESHOLD_VELOCITY = 200
 
-        const val TITLE = "Title"
-        const val LIST_IMAGE = "ListImage"
-        const val DESC = "Desc"
-        const val RATING = "Rating"
-        const val PRICE = "Price"
-        const val DISCOUNT = "Discount"
-        const val BRAND = "Brand"
+        const val TAG = "Product"
+        const val PRODUCT = "ProductItem"
 
-        fun newInstance(title: String, list_image: ArrayList<String>, desc: String, rating: Double, price: Int, discount: Double, brand: String) : ProductItemFragment{
+
+        fun newInstance(product: Product) : ProductItemFragment{
             val arduments = Bundle().apply {
-                putString(TITLE, title)
-                putStringArrayList(LIST_IMAGE, list_image)
-                putString(DESC, desc)
-                putDouble(RATING, rating)
-                putInt(PRICE, price)
-                putDouble(DISCOUNT, discount)
-                putString(BRAND, brand)
+                putSerializable(PRODUCT, product)
             }
             val fragment = ProductItemFragment()
             fragment.arguments = arduments
@@ -114,15 +90,29 @@ class ProductItemFragment : Fragment(), GestureDetector.OnGestureListener  {
         }
 
     }
-
-    private fun loadImage(index : Int){
-        if(listImage.size == 0){
-            //TODO дефолтное изображение
+    private fun preloadImages() {
+        for (index in listImage.indices) {
+            Picasso.get().load(listImage[index]).fetch()
         }
-        else{
-            Picasso.get().load(listImage[index]).into(binding.imageView2)
-        }
+    }
 
+    private fun loadImage(index: Int) {
+        Picasso.get().load(listImage[index]).into(binding.imageView2)
+        binding.imageCounterTextView.text = "${index+1}/${listImage.size}"
+    }
+
+    private fun nextImage(){
+        if (currentIndexImage < listImage.size - 1) {
+            currentIndexImage++
+            loadImage(currentIndexImage)
+        }
+    }
+
+    private fun prevImage(){
+        if (currentIndexImage > 0) {
+            currentIndexImage--
+            loadImage(currentIndexImage)
+        }
     }
 
     override fun onFling(p0: MotionEvent?, p1: MotionEvent, p2: Float, p3: Float): Boolean {
@@ -134,15 +124,9 @@ class ProductItemFragment : Fragment(), GestureDetector.OnGestureListener  {
             }
             if (p0 != null) {
                 if (p0.x - p1.x > SWIPE_MIN_DISTANCE && abs(p2) > SWIPE_THRESHOLD_VELOCITY) {
-                    if (currentIndexImage < listImage.size - 1) {
-                        currentIndexImage++
-                        loadImage(currentIndexImage)
-                    }
+                    nextImage()
                 } else if (p1.x - p0.x > SWIPE_MIN_DISTANCE && abs(p2) > SWIPE_THRESHOLD_VELOCITY) {
-                    if (currentIndexImage > 0) {
-                        currentIndexImage--
-                        loadImage(currentIndexImage)
-                    }
+                    prevImage()
                 }
             }
         } catch (_: Exception) {

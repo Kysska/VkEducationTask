@@ -7,7 +7,7 @@ import com.example.vkeducationtask.domain.entity.Product
 import kotlinx.coroutines.flow.Flow
 
 class GetPagingProducts(private val repository: ProductRepository) {
-    fun getPagingProducts() : Flow<PagingData<Product>> {
-         return repository.getProductsPaging()
+    fun getPagingProducts(category: String?) : Flow<PagingData<Product>> {
+         return repository.getProductsPaging(category)
     }
 }

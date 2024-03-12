@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface ProductRepository {
-    fun getProductsPaging() : Flow<PagingData<Product>>
+    fun getProductsPaging(category: String?) : Flow<PagingData<Product>>
+    suspend fun getCategories() : List<String>
 }

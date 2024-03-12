@@ -1,6 +1,7 @@
 package com.example.vkeducationtask.di
 
 import com.example.vkeducationtask.domain.ProductRepository
+import com.example.vkeducationtask.domain.usecase.GetCategories
 import com.example.vkeducationtask.domain.usecase.GetPagingProducts
 import dagger.Module
 import dagger.Provides
@@ -13,5 +14,11 @@ class DomainModule {
     @Provides
     fun provideGetPagingProducts(repository: ProductRepository) :GetPagingProducts{
         return GetPagingProducts(repository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetCategories(repository: ProductRepository) :GetCategories{
+        return GetCategories(repository)
     }
 }

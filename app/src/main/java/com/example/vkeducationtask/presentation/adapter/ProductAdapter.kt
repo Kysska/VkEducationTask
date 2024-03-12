@@ -1,5 +1,6 @@
 package com.example.vkeducationtask.presentation.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,18 +15,17 @@ import com.squareup.picasso.Picasso
 class ProductAdapter : PagingDataAdapter<Product, RecyclerView.ViewHolder>(COMPARATOR) {
 
     var onProductListClickListener: OnProductListClickListener? = null
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
          val productItem = getItem(position)
+        holder.itemView.setOnClickListener {
+             if (productItem != null) {
+                 onProductListClickListener?.onProductClickListener(productItem)
+             }
+         }
         if(productItem != null){
             (holder as ProductViewHolder).bind(productItem)
         }
-        holder.itemView.setOnClickListener {
-            if (productItem != null) {
-                onProductListClickListener?.onProductClickListener(productItem)
-            }
-            true
-        }
+
     }
 
 
