@@ -2,6 +2,7 @@ package com.example.vkeducationtask.di
 
 import com.example.vkeducationtask.domain.usecase.GetCategories
 import com.example.vkeducationtask.domain.usecase.GetPagingProducts
+import com.example.vkeducationtask.domain.usecase.GetSearchProductsPaging
 import com.example.vkeducationtask.presentation.MainViewModelFactory
 import dagger.Module
 import dagger.Provides
@@ -13,9 +14,10 @@ class AppModule {
     @Singleton
     fun provideMainViewModelFactory(
         getPagingProducts: GetPagingProducts,
-        getCategories: GetCategories
+        getCategories: GetCategories,
+        getSearchProductsPaging: GetSearchProductsPaging
     ): MainViewModelFactory {
-        return MainViewModelFactory(getPagingProducts, getCategories)
+        return MainViewModelFactory(getPagingProducts, getCategories, getSearchProductsPaging)
     }
 
 }

@@ -1,15 +1,28 @@
 <!-- res/layout/custom_menu_item.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/bottom">
+
+    <SearchView
+        android:id="@+id/search_bar"
+        android:layout_width="363dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_toStartOf="@+id/dropdown_menu"
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/search" />
 
     <ImageButton
         android:id="@+id/dropdown_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/baseline_sort_24"
-    android:background="@android:color/transparent"
-    android:padding="8dp"/>
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="0dp"
+        android:background="@android:color/transparent"
+        android:padding="8dp"
+        android:src="@drawable/baseline_sort_24" />
+
 
 </RelativeLayout>

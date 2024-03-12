@@ -1,16 +1,12 @@
 package com.example.vkeducationtask.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.GestureDetector
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
-import com.example.vkeducationtask.R
-import com.example.vkeducationtask.databinding.CardProductBinding
 import com.example.vkeducationtask.databinding.FragmentProductItemBinding
 import com.example.vkeducationtask.domain.entity.Product
 import com.squareup.picasso.Picasso
@@ -81,11 +77,11 @@ class ProductItemFragment : Fragment(), GestureDetector.OnGestureListener  {
 
 
         fun newInstance(product: Product) : ProductItemFragment{
-            val arduments = Bundle().apply {
+            val arguments = Bundle().apply {
                 putSerializable(PRODUCT, product)
             }
             val fragment = ProductItemFragment()
-            fragment.arguments = arduments
+            fragment.arguments = arguments
             return fragment
         }
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.SearchView
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -69,6 +70,23 @@ class ProductsListFragment : Fragment() {
         viewModel.loadProductsCategory(category)
     }
 
+    private fun setupSearchView(){
+        binding.toolbar.findViewById<SearchView>(R.id.search_bar).setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                viewModel.searchProducts()
+                return true
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                viewModel.setQuery(p0)
+                viewModel.filterLocalProducts()
+                binding.emptyData.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+                return true
+            }
+
+        })
+    }
+
     private fun setupToolBar(categories: List<String>){
         binding.toolbar.findViewById<ImageButton>(R.id.dropdown_menu).setOnClickListener {
             val popup = PopupMenu(requireContext(), it)
@@ -115,13 +133,12 @@ class ProductsListFragment : Fragment() {
                 when {
                     load.refresh is LoadState.Loading -> {
                         rv.visibility = View.GONE
-                        toolbar.visibility = View.INVISIBLE
+                        emptyData.visibility = View.GONE
                         progressBar.isVisible = true
                     }
 
                     load.refresh is LoadState.Error -> {
                         rv.visibility = View.GONE
-                        toolbar.visibility = View.INVISIBLE
                         progressBar.visibility = View.GONE
                         emptyData.visibility = View.VISIBLE
                         emptyData.text = "Network error"
@@ -136,7 +153,6 @@ class ProductsListFragment : Fragment() {
                             emptyData.visibility = View.VISIBLE
                             emptyData.text = "Empty Data"
                         } else {
-                            toolbar.visibility = View.VISIBLE
                             emptyData.visibility = View.GONE
                         }
                     }
@@ -158,6 +174,7 @@ class ProductsListFragment : Fragment() {
     private fun observeCategories() {
         viewModel.categoriesLiveData.observe(viewLifecycleOwner) {
             setupToolBar(it)
+            setupSearchView()
         }
     }
 

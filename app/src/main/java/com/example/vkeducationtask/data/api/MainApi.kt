@@ -16,4 +16,7 @@ interface MainApi {
     @GET("/products/categories")
     suspend fun getCategories() : Response<List<String>>
 
+    @GET("/products/search")
+    suspend fun searchProducts(@Query("q") query: String?, @Query("skip") skip: Int, @Query("limit") limit: Int): Response<ProductList>
+
 }

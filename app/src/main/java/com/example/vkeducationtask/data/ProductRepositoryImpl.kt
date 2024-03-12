@@ -22,6 +22,15 @@ class ProductRepositoryImpl(private val mainApi : MainApi) : ProductRepository{
 
     }
 
+    override fun getSearchProductsPaging(query : String?): Flow<PagingData<Product>>{
+        val pagingSource = SearchProductPagingImpl(mainApi, query)
+        val pagingData = Pager(
+            config = PagingConfig(pageSize = LIMIT, initialLoadSize = 20),
+            pagingSourceFactory = { pagingSource }
+        ).flow
+        return pagingData
+    }
+
     override suspend fun getCategories(): List<String> {
         try {
             return mainApi.getCategories().body() ?: emptyList()
